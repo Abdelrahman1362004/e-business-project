@@ -1,35 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Router>
+      {/* الـ Navbar هيفضل ثابت فوق في كل الصفحات */}
+      <Navbar />
+
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        <Routes>
+          {/* هنا بنحدد إيه اللي يظهر لما نفتح كل رابط */}
+          <Route path="/" element={
+            <div>
+              <h1>مرحباً بك في متجر عبود 🛒</h1>
+              <p>أفضل المنتجات بأفضل الأسعار</p>
+            </div>
+          } />
+          
+          <Route path="/products" element={<h1>قائمة المنتجات 📦</h1>} />
+          <Route path="/cart" element={<h1>سلة المشتريات 🛒</h1>} />
+          <Route path="/login" element={<h1>تسجيل الدخول 🔑</h1>} />
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
