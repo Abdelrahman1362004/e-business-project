@@ -1,6 +1,7 @@
+/* General App Styles */
 .app-wrapper {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #ffffff;
+  background-color: #fcfcfc;
   min-height: 100vh;
 }
 
@@ -8,6 +9,7 @@
   padding: 0 2rem;
 }
 
+/* Hero Section Styles */
 .hero-container {
   height: 75vh;
   display: flex;
@@ -55,6 +57,105 @@
   box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
 }
 
+/* Login Page Styles */
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 0;
+  min-height: 80vh;
+}
+
+.login-card {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-card h2 {
+  font-size: 2rem;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+}
+
+.login-card p {
+  color: #777;
+  margin-bottom: 30px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  font-size: 0.9rem;
+}
+
+.form-options a {
+  color: #0072ff;
+  text-decoration: none;
+}
+
+.login-button {
+  width: 100%;
+  padding: 14px;
+  background-color: #0072ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-button:hover {
+  background-color: #0056b3;
+}
+
+.signup-link {
+  margin-top: 25px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.signup-link a {
+  color: #0072ff;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* Placeholders */
 .page-placeholder {
   text-align: center;
   padding: 100px 0;
