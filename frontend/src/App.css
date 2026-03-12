@@ -1,42 +1,62 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.app-wrapper {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #ffffff;
+  min-height: 100vh;
+}
+
+.content {
+  padding: 0 2rem;
+}
+
+.hero-container {
+  height: 75vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+  border-radius: 25px;
+  margin-top: 30px;
+  color: white;
   text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.hero-title {
+  font-size: 4rem;
+  margin-bottom: 15px;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.hero-subtitle {
+  font-size: 1.4rem;
+  color: #ccc;
+  margin-bottom: 40px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.hero-button {
+  padding: 16px 45px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: #0072ff;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
 }
 
-.card {
-  padding: 2em;
+.hero-button:hover {
+  transform: translateY(-3px);
+  background-color: #0056b3;
+  box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
 }
 
-.read-the-docs {
-  color: #888;
+.page-placeholder {
+  text-align: center;
+  padding: 100px 0;
+  color: #333;
 }
