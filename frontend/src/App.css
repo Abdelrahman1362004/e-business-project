@@ -1,15 +1,17 @@
-/* General App Styles */
+/* General Layout */
 .app-wrapper {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #fcfcfc;
+  background-color: #f8f9fa;
   min-height: 100vh;
 }
 
 .content {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 0 2rem;
 }
 
-/* Hero Section Styles */
+/* Hero Section Styles (Home) */
 .hero-container {
   height: 75vh;
   display: flex;
@@ -55,6 +57,87 @@
   transform: translateY(-3px);
   background-color: #0056b3;
   box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
+}
+
+/* Products Page & Grid */
+.products-page {
+  padding: 40px 0;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  color: #1a1a1a;
+  text-align: center;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+}
+
+.product-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #eee;
+}
+
+.product-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.product-image img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  background-color: #f9f9f9;
+}
+
+.product-info {
+  padding: 20px;
+}
+
+.category-tag {
+  font-size: 0.75rem;
+  color: #0072ff;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.product-info h3 {
+  margin: 10px 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.price {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+}
+
+.add-to-cart-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #0072ff;
 }
 
 /* Login Page Styles */
@@ -155,7 +238,7 @@
   text-decoration: none;
 }
 
-/* Placeholders */
+/* Page Placeholders */
 .page-placeholder {
   text-align: center;
   padding: 100px 0;
