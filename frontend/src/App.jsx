@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import './App.css';
@@ -35,10 +36,20 @@ const productsData = [
 ];
 
 function App() {
+  // State to manage the shopping cart
+  const [cart, setCart] = useState([]);
+
+  // Function to add a product to the cart
+  const addToCart = (product) => {
+    setCart([...cart, product]);
+    alert(`${product.name} has been added to your cart! 🛒`);
+  };
+
   return (
     <Router>
       <div className="app-wrapper">
-        <Navbar />
+        {/* Pass the cart count to Navbar */}
+        <Navbar cartCount={cart.length} />
         
         <main className="content">
           <Routes>
@@ -56,7 +67,7 @@ function App() {
               </div>
             } />
             
-            {/* Products Page (New & Updated) */}
+            {/* Products Page (Updated with addToCart) */}
             <Route path="/products" element={
               <div className="products-page">
                 <h1 className="page-title">Premium Collection</h1>
@@ -70,7 +81,12 @@ function App() {
                         <span className="category-tag">{product.category}</span>
                         <h3>{product.name}</h3>
                         <p className="price">${product.price}</p>
-                        <button className="add-to-cart-btn">Add to Cart</button>
+                        <button 
+                          className="add-to-cart-btn" 
+                          onClick={() => addToCart(product)}
+                        >
+                          Add to Cart
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -110,7 +126,11 @@ function App() {
             <Route path="/cart" element={
               <div className="page-placeholder">
                 <h1>Your Shopping Cart 🛒</h1>
-                <p>Your cart is currently empty.</p>
+                {cart.length > 0 ? (
+                  <p>You have {cart.length} items in your cart.</p>
+                ) : (
+                  <p>Your cart is currently empty.</p>
+                )}
               </div>
             } />
             
