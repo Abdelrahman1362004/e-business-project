@@ -13,12 +13,25 @@ const productsData = [
 function App() {
   const [cart, setCart] = useState([]);
 
+  // 1. Add to Cart
   const addToCart = (product) => {
     setCart([...cart, product]);
     alert(`${product.name} added to cart! 🛒`);
   };
 
-  // Function to calculate total price
+  // 2. Remove specific item (New)
+  const removeFromCart = (indexToRemove) => {
+    const updatedCart = cart.filter((_, index) => index !== indexToRemove);
+    setCart(updatedCart);
+  };
+
+  // 3. Clear all items (New)
+  const clearCart = () => {
+    if (window.confirm("Are you sure you want to clear your cart?")) {
+      setCart([]);
+    }
+  };
+
   const totalPrice = cart.reduce((total, item) => total + item.price, 0);
 
   return (
@@ -87,10 +100,16 @@ function App() {
               </div>
             } />
 
-            {/* NEW: Real Cart Page Logic */}
+            {/* Updated Cart Page */}
             <Route path="/cart" element={
               <div className="cart-page">
-                <h1 className="page-title">Your Shopping Cart 🛒</h1>
+                <div className="cart-header">
+                  <h1 className="page-title">Your Shopping Cart 🛒</h1>
+                  {cart.length > 0 && (
+                    <button className="clear-cart-btn" onClick={clearCart}>Clear All</button>
+                  )}
+                </div>
+
                 {cart.length === 0 ? (
                   <div className="page-placeholder">
                     <p>Your cart is currently empty.</p>
@@ -107,6 +126,12 @@ function App() {
                             <p className="cart-item-category">{item.category}</p>
                             <p className="cart-item-price">${item.price}</p>
                           </div>
+                          <button 
+                            className="remove-item-btn" 
+                            onClick={() => removeFromCart(index)}
+                          >
+                            Remove
+                          </button>
                         </div>
                       ))}
                     </div>
