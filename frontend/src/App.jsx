@@ -3,52 +3,27 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import './App.css';
 
-// 1. Mock Data for your products
 const productsData = [
-  { 
-    id: 1, 
-    name: "iPhone 15 Pro", 
-    price: 999, 
-    image: "https://images.unsplash.com/photo-1696446701796-da61225697cc?q=80&w=500", 
-    category: "Phones" 
-  },
-  { 
-    id: 2, 
-    name: "MacBook Air M2", 
-    price: 1199, 
-    image: "https://images.unsplash.com/photo-1611186871348-b1ec696e52c9?q=80&w=500", 
-    category: "Laptops" 
-  },
-  { 
-    id: 3, 
-    name: "Samsung S24 Ultra", 
-    price: 1299, 
-    image: "https://images.unsplash.com/photo-1707231456201-70529d899564?q=80&w=500", 
-    category: "Phones" 
-  },
-  { 
-    id: 4, 
-    name: "Apple Watch Series 9", 
-    price: 399, 
-    image: "https://images.unsplash.com/photo-1546868871-70ca48370731?q=80&w=500", 
-    category: "Watches" 
-  },
+  { id: 1, name: "iPhone 15 Pro", price: 999, image: "https://images.unsplash.com/photo-1696446701796-da61225697cc?q=80&w=500", category: "Phones" },
+  { id: 2, name: "MacBook Air M2", price: 1199, image: "https://images.unsplash.com/photo-1611186871348-b1ec696e52c9?q=80&w=500", category: "Laptops" },
+  { id: 3, name: "Samsung S24 Ultra", price: 1299, image: "https://images.unsplash.com/photo-1707231456201-70529d899564?q=80&w=500", category: "Phones" },
+  { id: 4, name: "Apple Watch Series 9", price: 399, image: "https://images.unsplash.com/photo-1546868871-70ca48370731?q=80&w=500", category: "Watches" },
 ];
 
 function App() {
-  // State to manage the shopping cart
   const [cart, setCart] = useState([]);
 
-  // Function to add a product to the cart
   const addToCart = (product) => {
     setCart([...cart, product]);
-    alert(`${product.name} has been added to your cart! 🛒`);
+    alert(`${product.name} added to cart! 🛒`);
   };
+
+  // Function to calculate total price
+  const totalPrice = cart.reduce((total, item) => total + item.price, 0);
 
   return (
     <Router>
       <div className="app-wrapper">
-        {/* Pass the cart count to Navbar */}
         <Navbar cartCount={cart.length} />
         
         <main className="content">
@@ -67,7 +42,7 @@ function App() {
               </div>
             } />
             
-            {/* Products Page (Updated with addToCart) */}
+            {/* Products Page */}
             <Route path="/products" element={
               <div className="products-page">
                 <h1 className="page-title">Premium Collection</h1>
@@ -81,10 +56,7 @@ function App() {
                         <span className="category-tag">{product.category}</span>
                         <h3>{product.name}</h3>
                         <p className="price">${product.price}</p>
-                        <button 
-                          className="add-to-cart-btn" 
-                          onClick={() => addToCart(product)}
-                        >
+                        <button className="add-to-cart-btn" onClick={() => addToCart(product)}>
                           Add to Cart
                         </button>
                       </div>
@@ -109,27 +81,51 @@ function App() {
                       <label>Password</label>
                       <input type="password" placeholder="••••••••" required />
                     </div>
-                    <div className="form-options">
-                      <label><input type="checkbox" /> Remember me</label>
-                      <a href="#forgot">Forgot password?</a>
-                    </div>
                     <button type="submit" className="login-button">Login to Account</button>
                   </form>
-                  <p className="signup-link">
-                    Don't have an account? <a href="#signup">Sign up for free</a>
-                  </p>
                 </div>
               </div>
             } />
 
-            {/* Cart Page Placeholder */}
+            {/* NEW: Real Cart Page Logic */}
             <Route path="/cart" element={
-              <div className="page-placeholder">
-                <h1>Your Shopping Cart 🛒</h1>
-                {cart.length > 0 ? (
-                  <p>You have {cart.length} items in your cart.</p>
+              <div className="cart-page">
+                <h1 className="page-title">Your Shopping Cart 🛒</h1>
+                {cart.length === 0 ? (
+                  <div className="page-placeholder">
+                    <p>Your cart is currently empty.</p>
+                    <Link to="/products" style={{color: '#0072ff'}}>Go Shopping</Link>
+                  </div>
                 ) : (
-                  <p>Your cart is currently empty.</p>
+                  <div className="cart-container">
+                    <div className="cart-items-list">
+                      {cart.map((item, index) => (
+                        <div key={index} className="cart-item-card">
+                          <img src={item.image} alt={item.name} className="cart-item-img" />
+                          <div className="cart-item-info">
+                            <h3>{item.name}</h3>
+                            <p className="cart-item-category">{item.category}</p>
+                            <p className="cart-item-price">${item.price}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="cart-summary-card">
+                      <h2>Order Summary</h2>
+                      <div className="summary-details">
+                        <div className="summary-row">
+                          <span>Items ({cart.length}):</span>
+                          <span>${totalPrice}</span>
+                        </div>
+                        <div className="summary-row total">
+                          <span>Total:</span>
+                          <span>${totalPrice}</span>
+                        </div>
+                      </div>
+                      <button className="checkout-btn">Proceed to Checkout</button>
+                    </div>
+                  </div>
                 )}
               </div>
             } />
