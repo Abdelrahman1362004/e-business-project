@@ -1,38 +1,31 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config(); // Load variables from .env
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors()); // Allow React to connect
-app.use(express.json()); // To parse JSON bodies
+app.use(cors());
+app.use(express.json());
 
-// Mock User Data for Login
+// Mock user for validation
 const adminUser = {
     email: "admin@3bood.com",
     password: "123"
 };
 
-// Login API Endpoint
+// Login API
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
-    console.log(`Login attempt for: ${email}`);
+    console.log(`Login attempt: ${email}`);
 
     if (email === adminUser.email && password === adminUser.password) {
-        res.status(200).json({ 
-            success: true, 
-            message: "Login Successful! Welcome back Abood." 
-        });
+        res.status(200).json({ success: true, message: "Welcome Abood!" });
     } else {
-        res.status(401).json({ 
-            success: false, 
-            message: "Invalid email or password." 
-        });
+        res.status(401).json({ success: false, message: "Unauthorized" });
     }
 });
 
 app.listen(PORT, () => {
-    console.log(`Backend Server is running on port ${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
