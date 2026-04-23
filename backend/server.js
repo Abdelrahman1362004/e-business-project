@@ -1,29 +1,38 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 const cors = require('cors');
-
-// إجبار السيرفر على قراءة الملف من المسار الحالي
-dotenv.config({ path: './.env' });
+require('dotenv').config(); // Load variables from .env
 
 const app = express();
-app.use(express.json());
-app.use(cors());
-
-// السطر ده هيعرفنا المشكلة فين بالضبط
-console.log("Checking URI:", process.env.MONGO_URI);
-
-const dbURI = process.env.MONGO_URI;
-
-if (!dbURI) {
-    console.error("❌ Error: MONGO_URI is not defined in .env file!");
-} else {
-    mongoose.connect(dbURI)
-        .then(() => console.log('✅ Connected to MongoDB Atlas Successfully!'))
-        .catch((err) => console.error('❌ MongoDB Connection Error:', err.message));
-}
-
-app.get('/', (req, res) => res.send('API Running'));
-
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server on port ${PORT}`));
+
+// Middleware
+app.use(cors()); // Allow React to connect
+app.use(express.json()); // To parse JSON bodies
+
+// Mock User Data for Login
+const adminUser = {
+    email: "admin@3bood.com",
+    password: "123"
+};
+
+// Login API Endpoint
+app.post('/api/login', (req, res) => {
+    const { email, password } = req.body;
+    console.log(`Login attempt for: ${email}`);
+
+    if (email === adminUser.email && password === adminUser.password) {
+        res.status(200).json({ 
+            success: true, 
+            message: "Login Successful! Welcome back Abood." 
+        });
+    } else {
+        res.status(401).json({ 
+            success: false, 
+            message: "Invalid email or password." 
+        });
+    }
+});
+
+app.listen(PORT, () => {
+    console.log(`Backend Server is running on port ${PORT}`);
+});
