@@ -8,10 +8,13 @@ function App() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [user, setUser] = useState(null);
+  
+  // New States for Search and Filter
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   // Fetch Products and User Session on Load
   useEffect(() => {
-    // 1. Fetch products from Backend
     const getProducts = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/products');
@@ -22,7 +25,6 @@ function App() {
     };
     getProducts();
 
-    // 2. Check for saved login session
     const savedUser = localStorage.getItem('userEmail');
     if (savedUser) setUser(savedUser);
   }, []);
@@ -68,6 +70,16 @@ function App() {
     alert("Logged out.");
   };
 
+  // --- Logic for Filtering and Searching ---
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || product.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  // Get unique categories for the filter buttons
+  const categories = ["All", ...new Set(products.map(p => p.category))];
+
   return (
     <Router>
       <div className="app-wrapper">
@@ -75,6 +87,7 @@ function App() {
         
         <main className="content">
           <Routes>
+            {/* Home Page */}
             <Route path="/" element={
               <div className="hero-container">
                 <div className="hero-content">
@@ -85,25 +98,53 @@ function App() {
               </div>
             } />
             
+            {/* Products Page (Updated with Search and Filter) */}
             <Route path="/products" element={
               <div className="products-page">
                 <h1 className="page-title">Premium Collection</h1>
+                
+                {/* Search and Filter UI */}
+                <div className="filter-section">
+                  <input 
+                    type="text" 
+                    placeholder="Search products..." 
+                    className="search-input"
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  <div className="category-buttons">
+                    {categories.map(cat => (
+                      <button 
+                        key={cat} 
+                        className={`cat-btn ${selectedCategory === cat ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory(cat)}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="products-grid">
-                  {products.map((product) => (
-                    <div key={product.id} className="product-card">
-                      <div className="product-image"><img src={product.image} alt={product.name} /></div>
-                      <div className="product-info">
-                        <span className="category-tag">{product.category}</span>
-                        <h3>{product.name}</h3>
-                        <p className="price">${product.price}</p>
-                        <button className="add-to-cart-btn" onClick={() => addToCart(product)}>Add to Cart</button>
+                  {filteredProducts.length > 0 ? (
+                    filteredProducts.map((product) => (
+                      <div key={product.id} className="product-card">
+                        <div className="product-image"><img src={product.image} alt={product.name} /></div>
+                        <div className="product-info">
+                          <span className="category-tag">{product.category}</span>
+                          <h3>{product.name}</h3>
+                          <p className="price">${product.price}</p>
+                          <button className="add-to-cart-btn" onClick={() => addToCart(product)}>Add to Cart</button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <p className="no-results">No products found matching your search. 🔍</p>
+                  )}
                 </div>
               </div>
             } />
 
+            {/* Login and Cart Routes stay the same as your code */}
             <Route path="/login" element={
               <div className="login-wrapper">
                 <div className="login-card">
