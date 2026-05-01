@@ -16,11 +16,7 @@ const products = [
   { id: 4, name: "Apple Watch Series 9", price: 399, image: "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcS19dHmcLz27bwIorN6pW-PlI7XgLdhEpBJDogxiHPzR2R3mbrWEyYMookNn87DZ4GGnPnIN7v3i_z2ruLkaLofi7syQQyS81etID3yf2NOYNnyodLfFSmCezQ-u3rGEYAAyZbb1yA", category: "Watches" },
 ];
 
-// 2. Database Mock: Admin User
-const adminUser = {
-    email: "admin@3bood.com",
-    password: "123"
-};
+const adminUser = { email: "admin@3bood.com", password: "123" };
 
 // --- API Endpoints ---
 
@@ -29,7 +25,16 @@ app.get('/api/products', (req, res) => {
     res.json(products);
 });
 
-// Login Request
+// NEW: Get single product by ID
+app.get('/api/products/:id', (req, res) => {
+    const product = products.find(p => p.id === parseInt(req.params.id));
+    if (product) {
+        res.json(product);
+    } else {
+        res.status(404).json({ message: "Product not found" });
+    }
+});
+
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
     if (email === adminUser.email && password === adminUser.password) {
@@ -40,5 +45,5 @@ app.post('/api/login', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Backend Server is running on http://localhost:${PORT}`);
+    console.log(`Backend Server running on http://localhost:${PORT}`);
 });
