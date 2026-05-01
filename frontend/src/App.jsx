@@ -1,19 +1,60 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useParams } from 'react-router-dom';
 import axios from 'axios'; 
 import Navbar from './components/Navbar';
 import './App.css';
+
+// --- NEW: Product Detail Component ---
+// This component fetches and displays info for a single product based on the ID in the URL
+function ProductDetail({ addToCart }) {
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/products/${id}`);
+        setProduct(response.data);
+      } catch (err) {
+        console.error("Error fetching product details:", err);
+      }
+    };
+    fetchProduct();
+  }, [id]);
+
+  if (!product) return <div className="loader">Loading product details...</div>;
+
+  return (
+    <div className="product-detail-page">
+      <div className="detail-container">
+        <div className="detail-image">
+          <img src={product.image} alt={product.name} />
+        </div>
+        <div className="detail-info">
+          <span className="category-tag">{product.category}</span>
+          <h1 className="detail-title">{product.name}</h1>
+          <p className="detail-description">
+            Experience the latest in innovation with the {product.name}. 
+            Perfectly crafted for style and performance.
+          </p>
+          <p className="detail-price">${product.price}</p>
+          <button className="add-to-cart-btn big" onClick={() => addToCart(product)}>
+            Add to Shopping Cart
+          </button>
+          <Link to="/products" className="back-link">← Back to Products</Link>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function App() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [user, setUser] = useState(null);
-  
-  // New States for Search and Filter
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  // Fetch Products and User Session on Load
   useEffect(() => {
     const getProducts = async () => {
       try {
@@ -29,7 +70,6 @@ function App() {
     if (savedUser) setUser(savedUser);
   }, []);
 
-  // --- Cart Actions ---
   const addToCart = (product) => {
     setCart([...cart, product]);
     alert(`${product.name} added to cart! 🛒`);
@@ -45,12 +85,10 @@ function App() {
 
   const totalPrice = cart.reduce((total, item) => total + item.price, 0);
 
-  // --- Auth Actions ---
   const handleLogin = async (e) => {
     e.preventDefault();
     const email = e.target[0].value;
     const password = e.target[1].value;
-
     try {
       const res = await axios.post('http://localhost:5000/api/login', { email, password });
       if (res.data.success) {
@@ -70,14 +108,12 @@ function App() {
     alert("Logged out.");
   };
 
-  // --- Logic for Filtering and Searching ---
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === "All" || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  // Get unique categories for the filter buttons
   const categories = ["All", ...new Set(products.map(p => p.category))];
 
   return (
@@ -87,7 +123,6 @@ function App() {
         
         <main className="content">
           <Routes>
-            {/* Home Page */}
             <Route path="/" element={
               <div className="hero-container">
                 <div className="hero-content">
@@ -98,12 +133,10 @@ function App() {
               </div>
             } />
             
-            {/* Products Page (Updated with Search and Filter) */}
             <Route path="/products" element={
               <div className="products-page">
                 <h1 className="page-title">Premium Collection</h1>
                 
-                {/* Search and Filter UI */}
                 <div className="filter-section">
                   <input 
                     type="text" 
@@ -128,7 +161,12 @@ function App() {
                   {filteredProducts.length > 0 ? (
                     filteredProducts.map((product) => (
                       <div key={product.id} className="product-card">
-                        <div className="product-image"><img src={product.image} alt={product.name} /></div>
+                        {/* Link wraps the image to navigate to the details page */}
+                        <Link to={`/product/${product.id}`} className="product-link">
+                          <div className="product-image">
+                            <img src={product.image} alt={product.name} />
+                          </div>
+                        </Link>
                         <div className="product-info">
                           <span className="category-tag">{product.category}</span>
                           <h3>{product.name}</h3>
@@ -144,14 +182,16 @@ function App() {
               </div>
             } />
 
-            {/* Login and Cart Routes stay the same as your code */}
+            {/* Product Details Route */}
+            <Route path="/product/:id" element={<ProductDetail addToCart={addToCart} />} />
+
             <Route path="/login" element={
               <div className="login-wrapper">
                 <div className="login-card">
                   <h2>Login 👋</h2>
                   <form className="login-form" onSubmit={handleLogin}>
-                    <input type="email" placeholder="Email (admin@3bood.com)" required />
-                    <input type="password" placeholder="Password (123)" required />
+                    <input type="email" placeholder="admin@3bood.com" required />
+                    <input type="password" placeholder="123" required />
                     <button type="submit" className="login-button">Login</button>
                   </form>
                 </div>
