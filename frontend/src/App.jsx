@@ -5,7 +5,6 @@ import Navbar from './components/Navbar';
 import './App.css';
 
 // --- NEW: Product Detail Component ---
-// This component fetches and displays info for a single product based on the ID in the URL
 function ProductDetail({ addToCart }) {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -55,6 +54,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
+  // Load Products and User Session
   useEffect(() => {
     const getProducts = async () => {
       try {
@@ -70,21 +70,59 @@ function App() {
     if (savedUser) setUser(savedUser);
   }, []);
 
-  const addToCart = (product) => {
-    setCart([...cart, product]);
+  // Fetch cart from server once user is logged in
+  useEffect(() => {
+    if (user) {
+      const fetchCart = async () => {
+        try {
+          const res = await axios.get(`http://localhost:5000/api/cart/${user}`);
+          setCart(res.data);
+        } catch (err) {
+          console.error("Error loading cart from server");
+        }
+      };
+      fetchCart();
+    }
+  }, [user]);
+
+  // Sync cart with backend helper function
+  const syncCartWithServer = async (updatedCart) => {
+    if (user) {
+      try {
+        await axios.post('http://localhost:5000/api/cart/update', {
+          email: user,
+          cartItems: updatedCart
+        });
+      } catch (err) {
+        console.error("Sync error:", err);
+      }
+    }
+  };
+
+  // --- Cart Actions ---
+  const addToCart = async (product) => {
+    const updatedCart = [...cart, product];
+    setCart(updatedCart);
+    await syncCartWithServer(updatedCart);
     alert(`${product.name} added to cart! 🛒`);
   };
 
-  const removeFromCart = (indexToRemove) => {
-    setCart(cart.filter((_, index) => index !== indexToRemove));
+  const removeFromCart = async (indexToRemove) => {
+    const updatedCart = cart.filter((_, index) => index !== indexToRemove);
+    setCart(updatedCart);
+    await syncCartWithServer(updatedCart);
   };
 
-  const clearCart = () => {
-    if (window.confirm("Empty your shopping cart?")) setCart([]);
+  const clearCart = async () => {
+    if (window.confirm("Empty your shopping cart?")) {
+      setCart([]);
+      await syncCartWithServer([]);
+    }
   };
 
   const totalPrice = cart.reduce((total, item) => total + item.price, 0);
 
+  // --- Auth Actions ---
   const handleLogin = async (e) => {
     e.preventDefault();
     const email = e.target[0].value;
@@ -105,6 +143,7 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem('userEmail');
     setUser(null);
+    setCart([]); // Clear local cart view on logout
     alert("Logged out.");
   };
 
@@ -161,7 +200,6 @@ function App() {
                   {filteredProducts.length > 0 ? (
                     filteredProducts.map((product) => (
                       <div key={product.id} className="product-card">
-                        {/* Link wraps the image to navigate to the details page */}
                         <Link to={`/product/${product.id}`} className="product-link">
                           <div className="product-image">
                             <img src={product.image} alt={product.name} />
@@ -182,7 +220,6 @@ function App() {
               </div>
             } />
 
-            {/* Product Details Route */}
             <Route path="/product/:id" element={<ProductDetail addToCart={addToCart} />} />
 
             <Route path="/login" element={
