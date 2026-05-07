@@ -47,3 +47,18 @@ app.post('/api/login', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Backend Server running on http://localhost:${PORT}`);
 });
+// Mock Database for user carts
+let userCarts = {}; 
+
+// Endpoint to get cart items for a specific user
+app.get('/api/cart/:email', (req, res) => {
+    const email = req.params.email;
+    res.json(userCarts[email] || []);
+});
+
+// Endpoint to update cart items
+app.post('/api/cart/update', (req, res) => {
+    const { email, cartItems } = req.body;
+    userCarts[email] = cartItems;
+    res.json({ success: true, message: "Cart updated on server" });
+});
